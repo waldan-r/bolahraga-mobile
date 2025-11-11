@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bolahraga/widgets/menu_card.dart';
+import 'package:bolahraga/widgets/drawer.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -11,6 +12,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: LeftDrawer(),
       appBar: AppBar(
         title: const Text(
           'BOLAHRAGA', style: TextStyle(

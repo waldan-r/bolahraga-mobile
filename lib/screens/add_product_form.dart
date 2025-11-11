@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:bolahraga/widgets/drawer.dart";
+import "package:bolahraga/screens/menu.dart";
 
 class ProductFormPage extends StatefulWidget{
   const ProductFormPage({super.key});
@@ -186,18 +187,27 @@ class _ProductFormPageState extends State<ProductFormPage>{
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    hintText: "URL Thumbnail (opsional)",
+                    hintText: "URL Thumbnail",
                     labelText: "URL Thumbnail",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
-                  onChanged: (String? value) {
+                  onChanged: (String value) {
                     setState(() {
-
-                      _thumbnail = Uri.parse(value!);
+                      Uri? validUri = Uri.tryParse(value);
+                      _thumbnail = validUri!;
                     });
                   },
+                  validator: (String? value){
+                    if (value == null || value.isEmpty){
+                      return "Thumbnail should not be empty!";
+                    }
+                    if (Uri.tryParse(value)?.isAbsolute == false){
+                      return "Input unrecognizable";
+                    }
+                    return null;
+                  }
                 ),
               ),
 
@@ -228,7 +238,7 @@ class _ProductFormPageState extends State<ProductFormPage>{
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: const Text('Produk berhasil tersimpan'),
+                              title: const Text('Product Added Successfully'),
                               content: SingleChildScrollView(
                                 child: Column(
                                   crossAxisAlignment:
@@ -249,7 +259,15 @@ class _ProductFormPageState extends State<ProductFormPage>{
                                 TextButton(
                                   child: const Text('OK'),
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    // Navigator.pop(context);
+                                    // _formKey.currentState!.reset();
+
+                                    Navigator.pushReplacement(
+                                      context, 
+                                      MaterialPageRoute(
+                                        builder: (context) => MyHomePage()
+                                      )
+                                    );
                                     _formKey.currentState!.reset();
                                   },
                                 ),
