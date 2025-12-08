@@ -73,6 +73,7 @@ class MyHomePage extends StatelessWidget {
     ItemHomePage("All Product", Icons.sports_soccer_rounded),
     ItemHomePage("My Product", Icons.sports_soccer_sharp),
     ItemHomePage("Create Product", Icons.add),
+    ItemHomePage("Logout", Icons.logout),
   ];
 }
 
