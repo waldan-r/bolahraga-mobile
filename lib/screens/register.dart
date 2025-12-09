@@ -1,6 +1,6 @@
-import 'dart:convert';
+// lib/screens/register.dart
+import 'package:bolahraga/screens/login.dart';
 import 'package:flutter/material.dart';
-import 'package:bolahraga/screens/login.dart'; 
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -12,153 +12,85 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registrasi Akun Bolahraga'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const Text(
-                    'Daftar Akun Baru',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 30.0),
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      hintText: 'Masukkan username',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Username tidak boleh kosong';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Masukkan password',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password tidak boleh kosong';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Konfirmasi Password',
-                      hintText: 'Ulangi password',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Konfirmasi password tidak boleh kosong';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 24.0),
-                  ElevatedButton(
-                    onPressed: () async {
-                      String username = _usernameController.text;
-                      String password1 = _passwordController.text;
-                      String password2 = _confirmPasswordController.text;
 
-                      // Check credentials
-                      // TODO: Ganti URL dengan URL aplikasi Django kamu dan jangan lupa tambahkan trailing slash (/)!
-                      // Untuk menghubungkan emulator Android dengan Django di localhost, gunakan URL http://10.0.2.2/
-                      // Jika menggunakan Chrome, gunakan URL http://localhost:8000       
-                      final response = await request.postJson(
-                          "http://[YOUR_APP_URL]/auth/register/", // Ganti URL ini
-                          jsonEncode({
-                            "username": username,
-                            "password1": password1,
-                            "password2": password2,
-                          }));
-                      if (context.mounted) {
-                        if (response['status'] == 'success') {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Registrasi berhasil! Silakan login.'),
-                            ),
-                          );
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Registrasi gagal! ${response['message']}'),
-                            ),
-                          );
-                        }
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 50),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    ),
-                    child: const Text('Daftar'),
-                  ),
-                ],
-              ),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Register')),
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Register Football Shop",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-          ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(labelText: 'Username', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 12.0),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Password', border: OutlineInputBorder()),
+              obscureText: true,
+            ),
+            const SizedBox(height: 12.0),
+            TextField(
+              controller: _passwordConfirmationController,
+              decoration: const InputDecoration(labelText: 'Confirm Password', border: OutlineInputBorder()),
+              obscureText: true,
+            ),
+            const SizedBox(height: 24.0),
+            ElevatedButton(
+              onPressed: () async {
+                String username = _usernameController.text;
+                String password = _passwordController.text;
+                String passwordConfirmation = _passwordConfirmationController.text;
+                
+                // GANTI URL
+                final response = await request.post("http://10.0.2.2:8000/auth/register/", {
+                  'username': username,
+                  'password': password,
+                  'password_confirmation': passwordConfirmation,
+                });
+
+                if (response['status']) {
+                  String message = response['message'];
+                  if (context.mounted) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(SnackBar(content: Text("$message Silahkan login.")));
+                  }
+                } else {
+                  if (context.mounted) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Register Gagal'),
+                        content: Text(response['message'] ?? "Ada kesalahan"),
+                        actions: [
+                          TextButton(child: const Text('OK'), onPressed: () => Navigator.pop(context)),
+                        ],
+                      ),
+                    );
+                  }
+                }
+              },
+              child: const Text('Register'),
+            ),
+          ],
         ),
       ),
     );

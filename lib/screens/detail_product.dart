@@ -15,44 +15,63 @@ class DetailProductPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Tombol kembali
+            Navigator.pop(context);
           },
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Kalau thumbnail berupa URL gambar
-            // Image.network(product.fields.thumbnail), 
             Text(
               product.fields.name,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            Text("Category: ${product.fields.category}"),
-            Text("Price: Rp ${product.fields.price}"),
-            Text("Featured: ${product.fields.isFeatured ? 'Yes' : 'No'}"),
+            _buildDetailRow("Kategori", product.fields.category),
+            _buildDetailRow("Harga", "Rp ${product.fields.price}"),
+            _buildDetailRow("Featured", product.fields.isFeatured ? "Yes" : "No"),
             const SizedBox(height: 20),
             const Text(
-              "Description:",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              "Deskripsi:",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text(product.fields.description),
-            
-            const Spacer(),
+            const SizedBox(height: 5),
+            Text(
+              product.fields.description,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 30),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
                     Navigator.pop(context);
                 },
-                child: const Text("Kembali ke Daftar"),
+                child: const Text("Kembali"),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          Text(
+            "$label: ",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16),
+          ),
+        ],
       ),
     );
   }

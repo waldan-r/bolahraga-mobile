@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:bolahraga/models/product.dart';
-import 'package:bolahraga/screens/detail_product.dart'; // Kita buat abis ini
-import 'package:bolahraga/screens/login.dart';
+import 'package:bolahraga/screens/detail_product.dart';
+import 'package:bolahraga/widgets/left_drawer.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -15,15 +15,14 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   Future<List<Product>> fetchProduct(CookieRequest request) async {
-    // Ganti URL sesuai endpoint JSON lu
-    // PENTING: Pake endpoint yg lu edit di BAGIAN 1 tadi
+    // GANTI URL: Sesuaikan dengan endpoint JSON lu
+    // Pastikan di Django views.py show_json sudah difilter by user
     var response = await request.get(
       'http://10.0.2.2:8000/json/', 
     );
 
     var data = response;
     
-    // Konversi JSON ke object Product
     List<Product> listProduct = [];
     for (var d in data) {
       if (d != null) {
@@ -40,33 +39,8 @@ class _ProductPageState extends State<ProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Daftar Produk'),
-        actions: [
-            IconButton(
-                icon: const Icon(Icons.logout),
-                onPressed: () async {
-                    // Endpoint logout
-                    final response = await request.logout("http://10.0.2.2:8000/auth/logout/");
-                    String message = response["message"];
-                    if (context.mounted) {
-                        if (response['status']) {
-                            String uname = response["username"];
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("$message Sampai jumpa, $uname."),
-                            ));
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const LoginPage()),
-                            );
-                        } else {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(message),
-                            ));
-                        }
-                    }
-                },
-            ),
-        ],
       ),
+      drawer: const LeftDrawer(),
       body: FutureBuilder(
         future: fetchProduct(request),
         builder: (context, AsyncSnapshot snapshot) {
@@ -76,7 +50,11 @@ class _ProductPageState extends State<ProductPage> {
             if (!snapshot.hasData) {
               return const Column(
                 children: [
-                  Text("Belum ada data produk."),
+                  Text(
+                    "Belum ada data produk.",
+                    style: TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+                  ),
+                  SizedBox(height: 8),
                 ],
               );
             } else {
@@ -86,7 +64,7 @@ class _ProductPageState extends State<ProductPage> {
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: InkWell(
                     onTap: () {
-                        // Navigasi ke Detail Page
+                        // Navigasi ke Detail
                         Navigator.push(context, 
                             MaterialPageRoute(builder: (context) => DetailProductPage(product: snapshot.data![index]))
                         );
@@ -107,7 +85,11 @@ class _ProductPageState extends State<ProductPage> {
                           const SizedBox(height: 10),
                           Text("Rp ${snapshot.data![index].fields.price}"),
                           const SizedBox(height: 10),
-                          Text("${snapshot.data![index].fields.description}"),
+                          Text(
+                            "${snapshot.data![index].fields.description}",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ),

@@ -35,7 +35,7 @@ class Fields {
     int price;
     String description;
     String category;
-    String thumbnail; // Asumsi ini URL string atau path
+    String thumbnail;
     bool isFeatured;
 
     Fields({
@@ -54,8 +54,8 @@ class Fields {
         price: json["price"],
         description: json["description"],
         category: json["category"],
-        thumbnail: json["thumbnail"] ?? "", // Jaga-jaga kalau null
-        isFeatured: json["is_featured"] ?? false, // Perhatiin nama field di Django (biasanya snake_case)
+        thumbnail: json["thumbnail"] ?? "", 
+        isFeatured: json["is_featured"] ?? false,
     );
 
     Map<String, dynamic> toJson() => {
