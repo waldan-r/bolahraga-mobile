@@ -56,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 String passwordConfirmation = _passwordConfirmationController.text;
                 
                 // GANTI URL
-                final response = await request.post("http://10.0.2.2:8000/auth/register/", {
+                final response = await request.post("https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/auth/register/", {
                   'username': username,
                   'password': password,
                   'password_confirmation': passwordConfirmation,

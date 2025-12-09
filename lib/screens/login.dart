@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
                 // GANTI URL
-                final response = await request.login("http://10.0.2.2:8000/auth/login/", {
+                final response = await request.login("https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/auth/login/", {
                   'username': username,
                   'password': password,
                 });
