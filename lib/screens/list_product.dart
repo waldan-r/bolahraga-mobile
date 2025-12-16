@@ -18,7 +18,7 @@ class _ProductPageState extends State<ProductPage> {
     // GANTI URL: Sesuaikan dengan endpoint JSON lu
     // Pastikan di Django views.py show_json sudah difilter by user
     var response = await request.get(
-      'http://10.0.2.2:8000/json/', 
+      'https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/json/', 
     );
 
     var data = response;

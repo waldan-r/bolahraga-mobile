@@ -180,7 +180,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         // KIRIM KE DJANGO
                         // GANTI URL: buat endpoint khusus flutter create
                         final response = await request.postJson(
-                          "http://10.0.2.2:8000/create-flutter/", 
+                          "https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/create-flutter/", 
                           jsonEncode(<String, String>{
                             'name': _name,
                             'price': _price.toString(),
