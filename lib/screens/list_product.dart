@@ -44,20 +44,21 @@ class _ProductPageState extends State<ProductPage> {
       body: FutureBuilder(
         future: fetchProduct(request),
         builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.data == null) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else {
-            if (!snapshot.hasData) {
-              return const Column(
-                children: [
-                  Text(
-                    "Belum ada data produk.",
-                    style: TextStyle(color: Color(0xff59A5D8), fontSize: 20),
-                  ),
-                  SizedBox(height: 8),
-                ],
+          } else if (snapshot.hasError) {
+              // INI PENTING: Nampilin error ke layar biar ketahuan
+              return Center(
+                  child: Text("Error: ${snapshot.error}"),
               );
-            } else {
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                  child: Text(
+                      "Belum ada data produk.",
+                      style: TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+                  ),
+              );
+          } else {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (_, index) => Card(
@@ -98,7 +99,6 @@ class _ProductPageState extends State<ProductPage> {
               );
             }
           }
-        },
       ),
     );
   }

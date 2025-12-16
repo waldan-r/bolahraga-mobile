@@ -32,7 +32,7 @@ class MyHomePage extends StatelessWidget {
                     onPressed: () async {
                       final request = context.read<CookieRequest>();
                       // GANTI URL: endpoint logout django
-                      final response = await request.logout("http://10.0.2.2:8000/auth/logout/");
+                      final response = await request.logout("https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/auth/logout/");
                       String message = response["message"];
                       if (context.mounted) {
                           if (response['status']) {
