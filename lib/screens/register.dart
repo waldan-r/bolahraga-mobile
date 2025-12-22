@@ -28,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "Register Football Shop",
+              "Register Bolahraga",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -56,13 +56,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 String passwordConfirmation = _passwordConfirmationController.text;
                 
                 // GANTI URL
-                final response = await request.post("https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/auth/register/", {
+                final response = await request.post("https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/register-ajax/", {
                   'username': username,
-                  'password': password,
-                  'password_confirmation': passwordConfirmation,
+                  'password1': password,
+                  'password2': passwordConfirmation,
                 });
 
-                if (response['status']) {
+                if (response['status'] == 'success') {
                   String message = response['message'];
                   if (context.mounted) {
                     Navigator.pushReplacement(

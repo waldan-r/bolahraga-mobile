@@ -137,12 +137,18 @@ class ShopCard extends StatelessWidget {
 
                     // 2. Navigasi
                     if (item.name == "Create Product") {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => const ProductFormPage()));
+                    } 
+                  // PISAHIN LOGIC "ALL" SAMA "MY"
+                    else if (item.name == "All Products") {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => const ProductFormPage()));
-                    } else if (item.name == "All Products" || item.name == "My Products") {
+                            MaterialPageRoute(builder: (context) => const ProductPage(filterUser: false)));
+                    } 
+                    else if (item.name == "My Products") {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => const ProductPage()));
-                    }
+                            MaterialPageRoute(builder: (context) => const ProductPage(filterUser: true)));
+                    } 
                 },
                 child: Container(
                     padding: const EdgeInsets.all(8),

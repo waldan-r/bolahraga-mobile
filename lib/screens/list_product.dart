@@ -6,7 +6,8 @@ import 'package:bolahraga/screens/detail_product.dart';
 import 'package:bolahraga/widgets/left_drawer.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
+  final bool filterUser;
+  const ProductPage({super.key, this.filterUser = false});
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -15,10 +16,13 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   
   Future<List<Product>> fetchProduct(CookieRequest request) async {
-    // Fetch data JSON dari Django
-    var response = await request.get(
-      'https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/json/', 
-    );
+    String endpoint = 'https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/json/';
+    
+    if (widget.filterUser) {
+        endpoint += '?filter=my'; 
+    }
+
+    var response = await request.get(endpoint);
 
     var data = response;
     
