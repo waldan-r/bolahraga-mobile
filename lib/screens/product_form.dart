@@ -1,13 +1,15 @@
-// lib/screens/product_form.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:bolahraga/screens/menu.dart';
 import 'package:bolahraga/widgets/left_drawer.dart';
+import 'package:bolahraga/models/product.dart';
 
 class ProductFormPage extends StatefulWidget {
-  const ProductFormPage({super.key});
+  final Product? product;
+
+  const ProductFormPage({super.key, this.product});
 
   @override
   State<ProductFormPage> createState() => _ProductFormPageState();
@@ -16,7 +18,7 @@ class ProductFormPage extends StatefulWidget {
 class _ProductFormPageState extends State<ProductFormPage> {
   final _formKey = GlobalKey<FormState>();
   
-  // Variabel penyimpanan input
+  // Variabel input
   String _name = "";
   int _price = 0;
   String _description = "";
@@ -25,16 +27,26 @@ class _ProductFormPageState extends State<ProductFormPage> {
   bool _isFeatured = false;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.product != null) {
+      _name = widget.product!.fields.name;
+      _price = widget.product!.fields.price;
+      _description = widget.product!.fields.description;
+      _category = widget.product!.fields.category;
+      _thumbnail = widget.product!.fields.thumbnail ?? "";
+      _isFeatured = widget.product!.fields.isFeatured;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    String title = widget.product == null ? "Form Tambah Produk" : "Edit Produk";
 
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Form Tambah Produk',
-          ),
-        ),
+        title: Center(child: Text(title)),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
@@ -46,30 +58,26 @@ class _ProductFormPageState extends State<ProductFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Field NAME
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  initialValue: _name,
                   decoration: InputDecoration(
                     hintText: "Nama Produk",
                     labelText: "Nama Produk",
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                   ),
-                  onChanged: (String? value) {
-                    setState(() { _name = value!; });
-                  },
+                  onChanged: (String? value) => setState(() { _name = value!; }),
                   validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Nama tidak boleh kosong!";
-                    }
+                    if (value == null || value.isEmpty) return "Nama tidak boleh kosong!";
                     return null;
                   },
                 ),
               ),
-              // Field PRICE
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  initialValue: widget.product != null ? _price.toString() : "", 
                   decoration: InputDecoration(
                     hintText: "Harga",
                     labelText: "Harga",
@@ -80,15 +88,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     setState(() { _price = int.tryParse(value!) ?? 0; });
                   },
                   validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Harga tidak boleh kosong!";
-                    }
-                    if (int.tryParse(value) == null) {
-                      return "Harga harus berupa angka!";
-                    }
-                    if (int.parse(value) < 0) {
-                      return "Harga tidak boleh negatif!";
-                    }
+                    if (value == null || value.isEmpty) return "Harga tidak boleh kosong!";
+                    if (int.tryParse(value) == null) return "Harga harus berupa angka!";
+                    if (int.parse(value) < 0) return "Harga tidak boleh negatif!";
                     return null;
                   },
                 ),
@@ -97,38 +99,32 @@ class _ProductFormPageState extends State<ProductFormPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  initialValue: _category,
                   decoration: InputDecoration(
                     hintText: "Kategori",
                     labelText: "Kategori",
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                   ),
-                  onChanged: (String? value) {
-                    setState(() { _category = value!; });
-                  },
+                  onChanged: (String? value) => setState(() { _category = value!; }),
                   validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Kategori tidak boleh kosong!";
-                    }
+                    if (value == null || value.isEmpty) return "Kategori tidak boleh kosong!";
                     return null;
                   },
                 ),
               ),
-              // Field THUMBNAIL (URL)
+              // Field THUMBNAIL
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  initialValue: _thumbnail,
                   decoration: InputDecoration(
                     hintText: "URL Gambar (Thumbnail)",
                     labelText: "Thumbnail URL",
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                   ),
-                  onChanged: (String? value) {
-                    setState(() { _thumbnail = value!; });
-                  },
+                  onChanged: (String? value) => setState(() { _thumbnail = value!; }),
                   validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Thumbnail tidak boleh kosong!";
-                    }
+                    if (value == null || value.isEmpty) return "Thumbnail tidak boleh kosong!";
                     return null;
                   },
                 ),
@@ -137,19 +133,16 @@ class _ProductFormPageState extends State<ProductFormPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  initialValue: _description,
                   decoration: InputDecoration(
                     hintText: "Deskripsi",
                     labelText: "Deskripsi",
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                   ),
                   maxLines: 3,
-                  onChanged: (String? value) {
-                    setState(() { _description = value!; });
-                  },
+                  onChanged: (String? value) => setState(() { _description = value!; }),
                   validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Deskripsi tidak boleh kosong!";
-                    }
+                    if (value == null || value.isEmpty) return "Deskripsi tidak boleh kosong!";
                     return null;
                   },
                 ),
@@ -160,9 +153,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 child: CheckboxListTile(
                   title: const Text("Tandai sebagai Featured?"),
                   value: _isFeatured,
-                  onChanged: (bool? value) {
-                    setState(() { _isFeatured = value!; });
-                  },
+                  onChanged: (bool? value) => setState(() { _isFeatured = value!; }),
                 ),
               ),
               
@@ -174,13 +165,20 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.indigo),
+                      padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 30, vertical: 15)),
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        // KIRIM KE DJANGO
-                        // GANTI URL: buat endpoint khusus flutter create
+                        
+                        String url;
+                        if (widget.product == null) {
+                          url = "https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/create-flutter/";
+                        } else {
+                          url = "https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/edit-flutter/${widget.product!.pk}/";
+                        }
+
                         final response = await request.postJson(
-                          "https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/create-flutter/", 
+                          url, 
                           jsonEncode(<String, String>{
                             'name': _name,
                             'price': _price.toString(),
@@ -190,10 +188,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
                             'is_featured': _isFeatured.toString(),
                           }),
                         );
+
                         if (context.mounted) {
                           if (response['status'] == 'success') {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Produk baru berhasil disimpan!")),
+                              SnackBar(content: Text(widget.product == null ? "Produk baru disimpan!" : "Produk berhasil diupdate!")),
                             );
                             Navigator.pushReplacement(
                               context,
@@ -207,10 +206,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         }
                       }
                     },
-                    child: const Text(
-                      "Save",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: const Text("Save", style: TextStyle(color: Colors.white, fontSize: 16)),
                   ),
                 ),
               ),

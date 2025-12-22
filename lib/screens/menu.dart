@@ -31,23 +31,40 @@ class MyHomePage extends StatelessWidget {
                     icon: const Icon(Icons.logout, color: Colors.white,),
                     onPressed: () async {
                       final request = context.read<CookieRequest>();
-                      // GANTI URL: endpoint logout django
-                      final response = await request.logout("https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/auth/logout/");
-                      String message = response["message"];
-                      if (context.mounted) {
-                          if (response['status']) {
-                              String uname = response["username"];
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text("$message Sampai jumpa, $uname."),
-                              ));
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                              );
-                          } else {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text(message),
-                              ));
+                      try {
+                          final response = await request.logout(
+                              // Pastiin URL ini match sama urls.py kamu
+                              "https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/auth/logout/"
+                          );
+
+                          String message = response["message"];
+                          if (context.mounted) {
+                              if (response['status']) {
+                                  String uname = response["username"] ?? "User"; // Safety null
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text("$message Sampai jumpa, $uname."),
+                                  ));
+                                  // Pindah ke Login
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                                  );
+                              } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(message),
+                                  ));
+                              }
+                          }
+                      } catch (e) {
+                          // INI PENYELAMATNYA:
+                          // Kalau error parsing (HTML vs JSON), paksa logout di sisi HP
+                          print("Error logout: $e");
+                          if (context.mounted) {
+                            // Tetep pindahin ke halaman login biar ga nyangkut
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const LoginPage()),
+                            );
                           }
                       }
                     },

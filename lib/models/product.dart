@@ -35,7 +35,7 @@ class Fields {
     int price;
     String description;
     String category;
-    String thumbnail;
+    String? thumbnail;
     bool isFeatured;
 
     Fields({

@@ -47,14 +47,18 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () async {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
-                // GANTI URL
-                final response = await request.login("https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/auth/login/", {
+                
+                // PERBAIKAN DI SINI:
+                // Gunakan URL 'login-ajax/' sesuai urls.py kamu, bukan 'auth/login/'
+                // Pastikan 'https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/' adalah base URL yang benar.
+                final response = await request.login("https://waldan-rafid-bolahraga.pbp.cs.ui.ac.id/login-ajax/", {
                   'username': username,
                   'password': password,
                 });
+
                 if (request.loggedIn) {
                   String message = response['message'];
-                  String uname = response['username'];
+                  String uname = response['username'] ?? username; // Fallback kalau username null
                   if (context.mounted) {
                     Navigator.pushReplacement(
                       context,
@@ -70,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Login Gagal'),
-                        content: Text(response['message']),
+                        content: Text(response['message'] ?? "Username atau password salah."),
                         actions: [
                           TextButton(child: const Text('OK'), onPressed: () => Navigator.pop(context)),
                         ],
